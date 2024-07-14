@@ -31,9 +31,9 @@ class DeviceChecker(Script):
         }
     )
 
-    def run(self, data, commit) -&gt; None:
-        print_in_nb = &#91;]
-        for device in data&#91;"devices"]:
+    def run(self, data, commit) -> None:
+        print_in_nb = []
+        for device in data["devices"]:
             result = ping(str(device.primary_ip.address.ip), count=3, interval=0.2, privileged=False)
        
             if result.is_alive:
