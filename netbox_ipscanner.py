@@ -1,3 +1,9 @@
+#!/opt/netbox/venv/bin/python
+import django, os, sys
+sys.path.append('/opt/netbox/netbox')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'netbox.settings')
+django.setup()
+
 import pynetbox, urllib3, networkscan, socket, ipaddress
 from extras.scripts import Script
 
