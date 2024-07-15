@@ -1,5 +1,6 @@
 ####
-####
+#### https://chatgpt.com/share/ae1cae60-4c01-453a-aa5f-4c0c8044070d
+
 # nmap -sn -R -T3 --min-parallelism 10 -v 172.25.30.200/28
 # Starting Nmap 7.70 ( https://nmap.org ) at 2024-07-16 00:32 WIB
 # Initiating ARP Ping Scan at 00:32
