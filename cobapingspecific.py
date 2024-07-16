@@ -83,7 +83,7 @@ class PingSpecific(Script):
                                     "status": "deprecated"
                                 }
                             )
-                            self.log_info(current_ip_compressed + " - update deprecated")
+                            self.log_info(current_ip_compressed + " is down")
 
                         except (AttributeError):
                         # if not present in netbox and status is down 
@@ -111,7 +111,7 @@ class PingSpecific(Script):
                                 "status": "active"
                                 }
                             )
-                            self.log_info(current_ip_compressed + " - update active")
+                            self.log_info(current_ip_compressed + " is up")
 
                         # if not present in netbox, create ip address with the most specific subnet
                         except (AttributeError):
