@@ -14,12 +14,9 @@ class PingSpecific(Script):
         description = "Coba Ping Spesific Deacription"
         field_order = ['input_data']
 
-    input_data = ObjectVar(
-        model=Region
+    input_data = IPAddressVar(
+        description="Pilih Network"
     )
-    # input_data = IPAddressWithMaskVar(
-    #     description="Pilih Network"
-    # )
 
 
     def run(self, data, commit):
