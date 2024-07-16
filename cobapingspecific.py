@@ -19,8 +19,13 @@ class PingSpecific(Script):
     #     description="Pilih Network"
     # )
 
-    input_data = CHOICES = (
+    CHOICES = (
         ('172.25.30.7/31', '172.25.30.7/31')
+    )
+
+    input_data = ChoiceVar(
+        choices=CHOICES,
+        description="Pilih Network"
     )
 
     def run(self, data, commit):
