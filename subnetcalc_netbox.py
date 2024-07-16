@@ -15,7 +15,6 @@ class RunCommand(Script):
 
     def run(self, data, commit):
 
-        self.log
         url = "http://ipwhois.app/json/%s" % data['input_data']
 
         payload={}
