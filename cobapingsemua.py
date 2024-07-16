@@ -26,7 +26,7 @@ class RunCommand(Script):
         hosts_down = []
 
         # List of CIDR blocks to scan
-        cidr_blocks = ["172.25.30.202/31"]
+        cidr_blocks = ["172.25.30.2/31"]
 
         nb = pynetbox.api('http://172.25.30.129:8000', token='347076470e3d60698be8d50d00d1be814ff7dd97')
 
