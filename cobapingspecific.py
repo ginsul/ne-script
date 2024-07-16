@@ -14,12 +14,11 @@ class PingSpecific(Script):
         description = "Coba Ping Spesific Deacription"
         field_order = ['input_data']
 
-    input_ip = IPAddressVar(
-        description="Enter the IP Address:"
+
+    input_data = StringVar(
+        description="Pilih Network"
     )
-    input_subnet = IPAddressVar(
-        description="Enter the subnet mask:"
-    )
+
 
     def run(self, data, commit):
 
@@ -28,10 +27,8 @@ class PingSpecific(Script):
         hosts_down = []
 
         # List of CIDR blocks to scan
-        cidr_block = f"{data['input_ip']}/{data['input_subnet']}"
-
-        cidr_blocks = [cidr_block]
-
+        cidr_blocks = data['input_data']
+        
         nb = pynetbox.api('http://172.25.30.129:8000', token='347076470e3d60698be8d50d00d1be814ff7dd97')
 
         ### Function Specific Subnet
