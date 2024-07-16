@@ -20,7 +20,8 @@ class PingSpecific(Script):
     # )
 
     CHOICES = (
-        ('172.25.30.7/31', '172.25.30.7/31')
+        ('172.25.30.7/31', '172.25.30.7/31'),
+        ('s', 'South')
     )
 
     input_data = ChoiceVar(
