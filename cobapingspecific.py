@@ -20,7 +20,7 @@ class PingSpecific(Script):
     # )
 
     CHOICES = (
-        ('172.25.54.254/31', '172.25.54.254/31'),
+        ('172.25.30.7/31', '172.25.30.7/31'),
         ('s', 'South')
     )
 
@@ -40,7 +40,7 @@ class PingSpecific(Script):
 
         nb = pynetbox.api('http://172.25.30.129:8000', token='347076470e3d60698be8d50d00d1be814ff7dd97')
 
-        ### Function Specific Subnet
+        # Function to get Specific Subnet
         get_netbox_prefix = list(nb.ipam.prefixes.filter())
         netbox_prefix = []
         for pref in get_netbox_prefix:
@@ -60,10 +60,7 @@ class PingSpecific(Script):
                 return str(a) + '/' + str(ipaddress.ip_network(most_specific_subnet).prefixlen)
             else:
                 return "notsubnet"
-        # get_vm_ip_powershell = get_most_specific_subnet("172.25.30.200")
-        # self.log_info(get_vm_ip_powershell)
-        # 172.25.30.3/28        
-        ####
+
 
         # Function to resolve hostnames to IP addresses
         def resolve_ip(hostname):
@@ -71,6 +68,8 @@ class PingSpecific(Script):
             if result.stdout:
                 return result.stdout.split()[0]
             return None
+
+
 
         # Run nmap for each CIDR block
         for cidr in cidr_blocks:
@@ -83,19 +82,24 @@ class PingSpecific(Script):
                     # Determine IP based on context
                     if "[host down]" in line:
                         current_ip = line.split()[-3]  # Correct index for down hosts
-                        hosts_down.append(f'"{current_ip}"')
-                        self.log_info(current_ip)
+                        
+                        scanned_ip_format=ipaddress.ip_address(current_ip)
+                        current_ip_compressed=scanned_ip_format.compressed
+
+                        hosts_down.append(f'"{current_ip_compressed}"')
+
+                        self.log_info(current_ip_compressed)
 
                         try:
-                            ip_address = nb.ipam.ip_addresses.get(address=str(current_ip)).status
+                            ip_address = nb.ipam.ip_addresses.get(address=str(current_ip_compressed)).status
                             
                             #KALO ADA DI NETBOX dan STATUS NYA DOWN
-                            update_status_ip_host_down = nb.ipam.ip_addresses.get(address=str(current_ip)).update(
+                            update_status_ip_host_down = nb.ipam.ip_addresses.get(address=str(current_ip_compressed)).update(
                                 {
                                     "status": "deprecated"
                                 }
                             )
-                            self.log_info(current_ip + " - update deprecated")
+                            self.log_info(current_ip_compressed + " - update deprecated")
 
 
                         except (AttributeError):
@@ -109,28 +113,31 @@ class PingSpecific(Script):
                     else:
                         current_ip = line.split()[-1]  # Correct index for up hosts
 
+                        scanned_ip_format=ipaddress.ip_address(current_ip)
+                        current_ip_compressed=scanned_ip_format.compressed
+                        
                         # Resolve IP if it is a hostname
-                        if re.match(r'^[a-zA-Z]', current_ip):
-                            resolved_ip = resolve_ip(current_ip)
+                        if re.match(r'^[a-zA-Z]', current_ip_compressed):
+                            resolved_ip = resolve_ip(currencurrent_ip_compressedt_ip)
                             if resolved_ip:
-                                current_ip = resolved_ip
+                                current_ip_compressed = resolved_ip
 
-                        hosts_up.append(f'"{current_ip}"')
-                        self.log_info(current_ip)
+                        hosts_up.append(f'"{current_ip_compressed}"')
+                        self.log_info(currecurrent_ip_compressednt_ip)
 
                         try:
                             #KALO ADA DI NETBOX dan STATUS NYA UP
-                            ip_address = nb.ipam.ip_addresses.get(address=str(current_ip)).status
-                            update_status_ip_host_up = nb.ipam.ip_addresses.get(address=str(current_ip)).update(
+                            ip_address = nb.ipam.ip_addresses.get(address=str(current_ip_compressed)).status
+                            update_status_ip_host_up = nb.ipam.ip_addresses.get(address=str(current_ip_compressed)).update(
                             {
                                 "status": "active"
                             }
                             )
-                            self.log_info(current_ip + " - update active")
+                            self.log_info(current_ip_compressed + " - update active")
 
                         #KALO BELUM ADA DI NETBOX, DITAMBAHIN DENGAN SUBNET TERENDAH NYA
                         except (AttributeError):
-                            ip_address = nb.ipam.ip_addresses.create(address=get_most_specific_subnet(current_ip))
+                            ip_address = nb.ipam.ip_addresses.create(address=get_most_specific_subnet(current_ip_compressed))
 
         # Print arrays in the desired format
         self.log_info(f'Hosts up: [{", ".join(hosts_up)}]')
