@@ -15,6 +15,7 @@ class RunCommand(Script):
 
     def run(self, data, commit):
 
+        self.log
         url = "http://ipwhois.app/json/%s" % data['input_data']
 
         payload={}
@@ -30,10 +31,10 @@ class RunCommand(Script):
         #                 currency_code,currency_symbol,currency_rates,currency_plural
         
         self.log_success(f"IP :" + output['ip'])
-        self.log_success(f"Type :" + output['type'])
-        self.log_success(f"Continent :" + output['continent'])
-        self.log_success(f"Country :" + output['country'])
-        self.log_success(f"Region :" + output['region'])
+        self.log_debug(f"Type :" + output['type'])
+        self.log_info(f"Continent :" + output['continent'])
+        self.log_warning(f"Country :" + output['country'])
+        self.log_failure(f"Region :" + output['region'])
         self.log_success(f"City :" + output['city'])
         self.log_success(f"ASN :" + output['asn'])
         self.log_success(f"Org :" + output['org'])
