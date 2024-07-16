@@ -142,4 +142,5 @@ class PingSpecific(Script):
         # Print arrays in the desired format
         self.log_info(f'Hosts up: [{", ".join(hosts_up)}]')
         self.log_info(f'Hosts down: [{", ".join(hosts_down)}]')
-        return("Done")
+        return(f'Hosts up: [{", ".join(hosts_up)}]')
+        return(f'Hosts down: [{", ".join(hosts_down)}]')      
