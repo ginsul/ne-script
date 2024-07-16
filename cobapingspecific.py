@@ -123,7 +123,7 @@ class PingSpecific(Script):
                                 current_ip_compressed = resolved_ip
 
                         hosts_up.append(f'"{current_ip_compressed}"')
-                        self.log_info(currecurrent_ip_compressednt_ip)
+                        self.log_info(current_ip_compressed)
 
                         try:
                             #KALO ADA DI NETBOX dan STATUS NYA UP
