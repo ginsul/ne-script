@@ -26,7 +26,7 @@ class PingSpecific(Script):
         hosts_down = []
 
         # List of CIDR blocks to scan
-        cidr_blocks = (data['input_data'])
+        cidr_blocks = data['input_data']
 
         nb = pynetbox.api('http://172.25.30.129:8000', token='347076470e3d60698be8d50d00d1be814ff7dd97')
 
