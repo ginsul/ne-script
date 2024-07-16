@@ -15,10 +15,13 @@ class PingSpecific(Script):
         field_order = ['input_data']
 
 
-    input_data = StringVar(
-        description="Pilih Network"
-    )
+    # input_data = StringVar(
+    #     description="Pilih Network"
+    # )
 
+    input_data = CHOICES = (
+        ('172.25.30.7/31', '172.25.30.7/31')
+    )
 
     def run(self, data, commit):
 
