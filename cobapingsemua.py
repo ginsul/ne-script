@@ -70,59 +70,59 @@ class RunCommand(Script):
             # Process the nmap output line by line
             for line in result.stdout.splitlines():
                 if "Nmap scan report for" in line:
+
                     # Determine IP based on context
                     if "[host down]" in line:
                         current_ip = line.split()[-3]  # Correct index for down hosts
-                        hosts_down.append(f'"{current_ip}"')
-                        self.log_info(current_ip)
+                        
+                        scanned_ip_format=ipaddress.ip_address(current_ip)
+                        current_ip_compressed=scanned_ip_format.compressed
+
+                        hosts_down.append(f'"{current_ip_compressed}"')
 
                         try:
-                            ip_address = nb.ipam.ip_addresses.get(address=str(current_ip)).status
+                            ip_address = nb.ipam.ip_addresses.get(address=str(current_ip_compressed)).status
                             
-                            #KALO ADA DI NETBOX dan STATUS NYA DOWN
-                            update_status_ip_host_down = nb.ipam.ip_addresses.get(address=str(current_ip)).update(
+                        # if present in netbox and status is down
+                            update_status_ip_host_down = nb.ipam.ip_addresses.get(address=str(current_ip_compressed)).update(
                                 {
                                     "status": "deprecated"
                                 }
                             )
-                            self.log_info(current_ip + " - update deprecated")
-
+                            self.log_info(current_ip_compressed + " is down")
 
                         except (AttributeError):
+                        # if not present in netbox and status is down 
                             ip_address = 0
 
-
-
-
-
-                    #############################################################################
                     else:
                         current_ip = line.split()[-1]  # Correct index for up hosts
 
+                        scanned_ip_format=ipaddress.ip_address(current_ip)
+                        current_ip_compressed=scanned_ip_format.compressed
+                        
                         # Resolve IP if it is a hostname
-                        if re.match(r'^[a-zA-Z]', current_ip):
-                            resolved_ip = resolve_ip(current_ip)
+                        if re.match(r'^[a-zA-Z]', current_ip_compressed):
+                            resolved_ip = resolve_ip(currencurrent_ip_compressedt_ip)
                             if resolved_ip:
-                                current_ip = resolved_ip
+                                current_ip_compressed = resolved_ip
 
-                        hosts_up.append(f'"{current_ip}"')
-                        self.log_info(current_ip)
+                        hosts_up.append(f'"{current_ip_compressed}"')
 
                         try:
-                            #KALO ADA DI NETBOX dan STATUS NYA UP
-                            ip_address = nb.ipam.ip_addresses.get(address=str(current_ip)).status
-                            update_status_ip_host_up = nb.ipam.ip_addresses.get(address=str(current_ip)).update(
-                            {
+                        # if present in netbox and status is up
+                            ip_address = nb.ipam.ip_addresses.get(address=str(current_ip_compressed)).status
+                            update_status_ip_host_up = nb.ipam.ip_addresses.get(address=str(current_ip_compressed)).update(
+                                {
                                 "status": "active"
-                            }
+                                }
                             )
-                            self.log_info(current_ip + " - update active")
+                            self.log_info(current_ip_compressed + " is up")
 
-                        #KALO BELUM ADA DI NETBOX, DITAMBAHIN DENGAN SUBNET TERENDAH NYA
+                        # if not present in netbox, create ip address with the most specific subnet
                         except (AttributeError):
-                            ip_address = nb.ipam.ip_addresses.create(address=get_most_specific_subnet(current_ip))
+                            ip_address = nb.ipam.ip_addresses.create(address=get_most_specific_subnet(current_ip_compressed))
+                            self.log_info(current_ip_compressed + " - new IP discovered")
 
-        # Print arrays in the desired format
-        self.log_info(f'Hosts up: [{", ".join(hosts_up)}]')
-        self.log_info(f'Hosts down: [{", ".join(hosts_down)}]')
-        return("Done")
+        return(f'Hosts up: [{", ".join(hosts_up)}]')
+        return(f'Hosts down: [{", ".join(hosts_down)}]')      
